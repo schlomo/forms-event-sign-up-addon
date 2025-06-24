@@ -1,0 +1,251 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Development Workflow & Best Practices for Google Workspace Add-ons
+
+## Git-Based Development Workflow
+
+### Local Development Setup
+- Use local development environment with Git version control
+- Implement `clasp` (Command Line Apps Script Projects) for Google Apps Script integration
+- Maintain local source files in `src/` directory
+- Use `.clasp.json` for project configuration
+- Implement proper `.gitignore` for Google Apps Script projects
+
+### Development Environment Configuration
+- Install Node.js and npm for clasp tooling
+- Install clasp globally: `npm install -g @google/clasp`
+- Authenticate with Google: `clasp login`
+- Create `.clasp.json` configuration file
+- Set up proper file structure for local development
+
+### File Structure for Git-Based Workflow
+```
+forms-event-sign-up-addon/
+├── .clasp.json              # Clasp configuration
+├── .gitignore               # Git ignore rules
+├── package.json             # Node.js dependencies
+├── README.md               # Project documentation
+├── src/                    # Source files
+│   ├── Code.js            # Main Google Apps Script code
+│   ├── Sidebar.html       # Sidebar interface
+│   └── appsscript.json    # Apps Script manifest
+└── scripts/               # Build and deployment scripts
+    ├── deploy.sh          # Deployment script
+    └── sync.sh            # Sync script
+```
+
+### Clasp Configuration
+- Use `.clasp.json` to link local project to Google Apps Script
+- Configure proper file mapping between local and remote
+- Set up script ID for Google Apps Script project
+- Implement proper root directory configuration
+
+### Development Workflow
+1. **Local Development**: Edit files in `src/` directory
+2. **Version Control**: Commit changes to Git repository
+3. **Testing**: Test locally using clasp commands
+4. **Deployment**: Push changes to Google Apps Script using clasp
+5. **Validation**: Verify functionality in Google Apps Script editor
+
+### Clasp Commands for Development
+- `clasp push`: Push local changes to Google Apps Script
+- `clasp pull`: Pull changes from Google Apps Script to local
+- `clasp open`: Open Google Apps Script project in browser
+- `clasp deploy`: Deploy new version of the addon
+- `clasp versions`: List deployed versions
+- `clasp logs`: View execution logs
+
+## Development Environment
+
+### Google Apps Script Development
+- Use local development environment with clasp integration
+- Implement proper version control with Git
+- Use descriptive commit messages following conventional commits
+- Maintain separate development and production versions
+
+### Google Workspace Add-ons Specific Setup
+- Configure OAuth consent screen for add-on permissions
+- Set up proper scopes for required Google APIs
+- Configure manifest file for add-on deployment
+- Test in Google Workspace environment
+
+### Code Organization
+- Keep related functions grouped together
+- Use clear section comments to organize code
+- Maintain consistent file structure across projects
+- Separate concerns between UI and business logic
+
+## Testing Strategy
+
+### Local Testing
+- Test Google Apps Script functions locally using clasp
+- Use Google Apps Script API for testing
+- Implement proper test data management
+- Use descriptive test names and assertions
+
+### Integration Testing
+- Test Google API integrations thoroughly
+- Validate permission handling
+- Test error scenarios and edge cases
+- Verify trigger functionality
+
+### UI Testing
+- Test sidebar interface in different states
+- Validate responsive behavior within 300px constraint
+- Test accessibility features
+- Verify error handling in UI
+- Test client-server communication patterns
+
+### Google Workspace Add-ons Testing
+- Test add-on installation and authorization
+- Validate interface behavior in different Google Workspace apps
+- Test permission handling and error recovery
+- Verify compliance with Google Workspace guidelines
+
+## Error Handling & Debugging
+
+### Logging Strategy
+- Use `Logger.log()` for debugging information
+- Implement structured logging for errors
+- Include context information in log messages
+- Use appropriate log levels
+
+### Error Recovery
+- Implement graceful error handling
+- Provide clear error messages to users
+- Maintain application state during errors
+- Implement retry mechanisms where appropriate
+
+### Debugging Tools
+- Use Google Apps Script debugger
+- Implement console logging for frontend debugging
+- Use browser developer tools for UI issues
+- Monitor execution logs for backend issues
+- Use Google Apps Script execution logs
+- Use clasp logs for local debugging
+
+## Code Quality Standards
+
+### Code Review Process
+- Review all code changes before deployment
+- Check for security vulnerabilities
+- Validate error handling implementation
+- Ensure proper documentation
+- Verify Google Workspace Add-ons compliance
+
+### Performance Optimization
+- Minimize API calls and quota usage
+- Optimize database queries and operations
+- Implement proper caching strategies
+- Monitor execution time and resource usage
+- Follow Google Apps Script quota limits
+
+### Security Considerations
+- Validate all user inputs
+- Implement proper access controls
+- Use secure communication protocols
+- Follow Google Apps Script security best practices
+- Use `@OnlyCurrentDoc` annotation appropriately
+
+## Deployment & Release Management
+
+### Version Control
+- Use semantic versioning for releases
+- Maintain changelog for all releases
+- Tag releases appropriately
+- Document breaking changes
+
+### Git-Based Deployment
+- Use Git tags for version management
+- Implement automated deployment scripts
+- Use clasp for Google Apps Script deployment
+- Maintain deployment history and rollback capability
+
+### Google Workspace Add-ons Deployment
+- Configure proper manifest file
+- Set up OAuth consent screen
+- Configure required scopes
+- Test deployment in staging environment
+- Submit for Google Workspace Marketplace review
+
+### Deployment Process
+- Test thoroughly before deployment
+- Use staging environment when possible
+- Implement rollback procedures
+- Monitor deployment success
+- Verify add-on functionality post-deployment
+
+### User Communication
+- Communicate changes to users
+- Provide migration guidance when needed
+- Document new features and improvements
+- Maintain user support documentation
+
+## Documentation Standards
+
+### Code Documentation
+- Document all public functions
+- Include parameter descriptions
+- Document return values and types
+- Provide usage examples
+- Document Google Apps Script specific patterns
+
+### User Documentation
+- Create clear setup instructions
+- Document common use cases
+- Provide troubleshooting guides
+- Maintain FAQ sections
+- Include Google Workspace integration guides
+
+### API Documentation
+- Document all API endpoints
+- Include request/response examples
+- Document error codes and messages
+- Provide integration guides
+- Document Google Workspace API usage
+
+## Maintenance & Support
+
+### Monitoring
+- Monitor application performance
+- Track error rates and types
+- Monitor user feedback and issues
+- Track feature usage and adoption
+- Monitor Google Apps Script quota usage
+
+### Updates & Patches
+- Regular security updates
+- Performance improvements
+- Bug fixes and stability improvements
+- Feature enhancements based on user feedback
+- Google Workspace compatibility updates
+
+### User Support
+- Provide clear support channels
+- Maintain knowledge base
+- Respond to user issues promptly
+- Implement user feedback collection
+- Support Google Workspace integration issues
+
+## Google Workspace Add-ons Best Practices
+
+### Interface Design
+- Follow [Google Workspace Add-ons interface guidelines](mdc:https:/developers.google.com/workspace/add-ons/concepts/dialogs)
+- Design for sidebar constraints (300px width)
+- Implement proper client-server communication
+- Use appropriate interface types (sidebars vs dialogs)
+
+### Development Guidelines
+- Follow Google Apps Script best practices
+- Implement proper error handling and logging
+- Use official Google Workspace APIs correctly
+- Maintain compatibility with Google Workspace updates
+
+### Publishing Requirements
+- Meet Google Workspace Marketplace requirements
+- Pass security review process
+- Provide comprehensive documentation
+- Maintain user support capabilities

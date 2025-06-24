@@ -1,0 +1,178 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Forms Event Sign-Up Addon - Core Architecture
+
+## Project Overview
+This is a Google Workspace addon written in Google Apps Scripts. The purpose is to simplify and automate the problem of self-service event signup via Google Forms and Google Calendar. We connect a single Google Form to a single calendar entry.
+
+## Architecture Principles
+
+### 1. Sidebar as Main Interface
+The main interaction point with the user is the sidebar of the addon in Google Forms. Everything has to be handled there.
+
+**Key Constraints:**
+- **Fixed Width**: Sidebars have a fixed 300px width that cannot be altered
+- **Location**: Appears on the right side of the editor interface
+- **Interaction Model**: Users can continue interacting with the form while sidebar is open
+- **Creation Pattern**: Use `HtmlService.createHtmlOutputFromFile()` and `Ui.showSidebar()`
+
+### 2. Single Responsibility Principle
+- Each function should have one clear purpose
+- Separate UI logic from business logic
+- Keep configuration management isolated
+- Maintain clear boundaries between different concerns
+
+### 3. Error-First Design
+- Handle errors gracefully at every level
+- Provide clear user feedback for all error conditions
+- Implement proper fallback mechanisms
+- Log errors appropriately for debugging
+
+### 4. Configuration-Driven Architecture
+- Use document properties for persistent configuration
+- Implement proper configuration validation
+- Provide clear configuration management UI
+- Support configuration reset and recovery
+
+### 5. Client-Server Communication
+- Use `google.script.run()` for all client-to-server communication
+- Implement proper success and failure handlers
+- Maintain non-blocking communication patterns
+- Validate data on both client and server sides
+
+## System Components
+
+### Backend Services (Code.js)
+- **Form Management**: Handle form state and responses
+- **Calendar Integration**: Manage calendar events and guests
+- **Trigger Management**: Set up and manage automation triggers
+- **Configuration Service**: Handle persistent configuration storage
+- **Error Handling**: Centralized error management and logging
+
+### Frontend Interface (Sidebar.html)
+- **Status Display**: Show current system state and configuration
+- **Configuration UI**: Provide intuitive setup and management interface
+- **Event Selection**: Enable calendar and event browsing
+- **Control Interface**: Manage automation and form acceptance
+
+### Integration Layer
+- **Form-Calendar Bridge**: Connect form submissions to calendar events
+- **Permission Management**: Handle Google Workspace permissions
+- **Data Flow**: Manage data between frontend and backend
+
+## Interface Architecture
+
+### Sidebar Implementation
+- **Fixed Width Design**: Optimize for 300px width constraint
+- **Vertical Scrolling**: Maximize scroll area for content
+- **Progressive Disclosure**: Show only relevant information
+- **Persistent Controls**: Keep important buttons always visible
+
+### Dialog Considerations
+- **Modal Behavior**: Use dialogs when user must make a choice before continuing
+- **File Selection**: Consider file-open dialogs for Google Drive integration
+- **Error Handling**: Provide focused error resolution in dialogs
+
+### Client-Server Communication
+- **Asynchronous Pattern**: Server-side script continues running while interface is open
+- **Non-blocking**: UI doesn't suspend server operations
+- **Error Handling**: Comprehensive error handling on both sides
+- **Data Validation**: Validate data on client and server
+
+## Data Flow Architecture
+
+### Configuration Flow
+1. User selects calendar and event through UI
+2. Configuration validated and stored in document properties
+3. Trigger created/updated for form submission automation
+4. Status updated and displayed to user
+
+### Automation Flow
+1. Form submission triggers automation function
+2. Respondent email extracted from form response
+3. Email added as guest to configured calendar event
+4. Operation logged for audit purposes
+
+### Error Handling Flow
+1. Errors caught at appropriate levels
+2. User-friendly messages generated
+3. System state maintained for recovery
+4. Errors logged for debugging
+
+## Security & Permissions
+
+### Permission Model
+- Request minimal required permissions
+- Use `@OnlyCurrentDoc` for security
+- Handle permission errors gracefully
+- Provide clear guidance for permission issues
+
+### Data Security
+- Validate all user inputs
+- Sanitize data before processing
+- Implement proper access controls
+- Log security-relevant events
+
+## Scalability Considerations
+
+### Current Limitations
+- Single form to single event mapping
+- Limited to one automation per form
+- Sidebar UI constraints (300px width)
+- Fixed interface layout
+
+### Future Extension Points
+- Multiple event support
+- Custom field mapping
+- Advanced notification systems
+- Bulk operations support
+- Dialog-based advanced configuration
+
+## Testing & Quality Assurance
+
+### Testing Strategy
+- Unit testing for core functions
+- Integration testing for Google APIs
+- UI testing for sidebar interface
+- Error scenario testing
+- Client-server communication testing
+
+### Quality Metrics
+- Error rate monitoring
+- Performance tracking
+- User satisfaction measurement
+- Code maintainability assessment
+
+## Deployment & Distribution
+
+### Publishing Requirements
+- Google Workspace Marketplace compliance
+- Security review requirements
+- Documentation standards
+- User support considerations
+
+### Maintenance Strategy
+- Regular security updates
+- Performance monitoring
+- User feedback integration
+- Backward compatibility maintenance
+
+## Google Workspace Add-ons Compliance
+
+### Interface Guidelines
+- Follow [Google Workspace Add-ons dialogs and sidebars guide](mdc:https:/developers.google.com/workspace/add-ons/concepts/dialogs)
+- Implement proper client-server communication patterns
+- Use appropriate interface types for different use cases
+- Follow Google's design patterns and constraints
+
+### Development Best Practices
+- Use official Google Apps Script patterns
+- Implement proper error handling and logging
+- Follow security best practices
+- Maintain compatibility with Google Workspace updates
+
+## Dependencies
+- 

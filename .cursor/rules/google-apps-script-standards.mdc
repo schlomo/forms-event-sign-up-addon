@@ -1,0 +1,136 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Google Apps Script Standards for Google Workspace Add-ons
+
+## Project Structure & Organization
+
+### File Organization
+- Keep all Google Apps Script code in `src/` directory
+- Use descriptive file names: `Code.js` for main logic, `Sidebar.html` for UI
+- Separate concerns: backend logic in `.js` files, frontend in `.html` files
+- Use `@OnlyCurrentDoc` annotation for security and performance
+
+### Code Organization Principles
+- Group related functions together with clear section comments
+- Place global constants at the top of files
+- Use consistent naming conventions: camelCase for functions and variables
+- Separate UI logic from business logic
+
+## Google Workspace Add-ons Interface Implementation
+
+### Sidebar Implementation
+- **Fixed Width Constraint**: Sidebars have fixed 300px width that cannot be changed
+- **Creation Pattern**: Use `HtmlService.createHtmlOutputFromFile()` and `Ui.showSidebar()`
+- **Location**: Appears on the right side of editor interface
+- **Interaction Model**: Users can interact with editor while sidebar is open
+- **Client-Server Communication**: Use `google.script.run()` for async communication
+
+### Dialog Implementation
+- **Modal Behavior**: Overlays editor content and prevents interaction until closed
+- **Use Case**: When user must make a choice before continuing with editor
+- **Creation Pattern**: Use `HtmlService.createHtmlOutputFromFile()` and `Ui.showModalDialog()`
+- **Customizable**: Content and size can be customized
+- **Client-Server Communication**: Use `google.script.run()` for async communication
+
+### File-Open Dialogs
+- **Pre-built Solution**: For selecting files from Google Drive
+- **Requirements**: Cloud Platform project access and Google Picker API
+- **Configuration**: Additional setup beyond standard dialogs
+
+## Google Apps Script Best Practices
+
+### Service Usage
+- Use `PropertiesService.getDocumentProperties()` for form-specific configuration
+- Leverage `FormApp.getActiveForm()` for form operations
+- Use `CalendarApp` for calendar operations with proper error handling
+- Implement proper trigger management with `ScriptApp`
+
+### Error Handling & Logging
+- Always wrap API calls in try-catch blocks
+- Use `Logger.log()` for debugging and error tracking
+- Provide meaningful error messages to users
+- Handle missing permissions gracefully with user-friendly messages
+- Validate configuration before executing operations
+
+### Performance Considerations
+- Minimize API calls by batching operations where possible
+- Use efficient data structures and avoid unnecessary loops
+- Cache frequently accessed data in properties when appropriate
+- Implement proper debouncing for search operations
+
+### Security & Permissions
+- Request minimal required permissions
+- Validate user input before processing
+- Use `@OnlyCurrentDoc` to limit script access
+- Handle permission errors gracefully with clear user guidance
+
+## Function Design Principles
+
+### Function Responsibilities
+- Each function should have a single, clear purpose
+- Keep functions focused and avoid mixing concerns
+- Use descriptive function names that indicate their purpose
+- Implement proper parameter validation
+
+### Trigger Functions
+- Design trigger functions to be idempotent and fault-tolerant
+- Include comprehensive error handling for automated operations
+- Log all trigger executions for debugging
+- Handle edge cases like missing configuration gracefully
+
+### UI Integration Functions
+- Return structured data objects for frontend consumption
+- Include status information in responses
+- Provide clear success/error indicators
+- Use consistent response formats across functions
+
+## Configuration Management
+
+### Properties Usage
+- Use document properties for form-specific configuration
+- Implement proper property validation and defaults
+- Provide clear reset/cleanup functionality
+- Store only necessary data to minimize quota usage
+
+### Configuration Validation
+- Validate calendar and event IDs before saving
+- Check user permissions for selected calendars
+- Provide clear feedback for configuration errors
+- Implement graceful degradation when configuration is invalid
+
+## Integration Patterns
+
+### Form-Calendar Integration
+- Implement robust event guest management
+- Handle calendar permission issues gracefully
+- Provide clear feedback for successful operations
+- Log all integration activities for audit purposes
+
+### Trigger Management
+- Implement proper trigger cleanup and recreation
+- Avoid duplicate triggers for the same function
+- Use descriptive trigger names for debugging
+- Handle trigger creation failures gracefully
+
+## Client-Server Communication
+
+### Communication Patterns
+- Use `google.script.run()` for all client-to-server communication
+- Implement proper success and failure handlers
+- Use `withSuccessHandler()` and `withFailureHandler()` consistently
+- Avoid blocking operations in UI thread
+
+### Data Flow
+- Return structured data objects from server functions
+- Include status and error information in responses
+- Use consistent data formats across all functions
+- Implement proper data validation on both client and server
+
+### Error Handling
+- Provide user-friendly error messages
+- Log errors appropriately for debugging
+- Implement retry mechanisms where appropriate
+- Maintain application state during errors

@@ -1,0 +1,9 @@
+# This file tells clasp which files to ignore
+# Since we're already in the src/ directory, we only need to ignore specific files
+
+# Ignore any potential build artifacts or temporary files
+*.log
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak 

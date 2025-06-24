@@ -1,0 +1,45 @@
+{
+    "name": "forms-event-sign-up-addon",
+    "version": "1.0.0",
+    "description": "Google Workspace Add-on for automating event sign-ups via Google Forms and Google Calendar",
+    "main": "src/Code.gs",
+    "scripts": {
+        "login": "clasp login",
+        "logout": "clasp logout",
+        "create": "clasp create --type standalone --title 'Forms Event Sign-up Addon'",
+        "push": "clasp push",
+        "pull": "clasp pull",
+        "open": "clasp open",
+        "deploy": "clasp deploy",
+        "versions": "clasp versions",
+        "logs": "clasp logs",
+        "watch": "clasp push --watch",
+        "sync": "npm run pull && npm run push",
+        "setup": "npm run login && npm run create",
+        "clasp": "clasp"
+    },
+    "keywords": [
+        "google-apps-script",
+        "google-workspace",
+        "google-forms",
+        "google-calendar",
+        "addon",
+        "automation"
+    ],
+    "author": "Schlomo Schapiro",
+    "license": "Apache-2.0",
+    "devDependencies": {
+        "@google/clasp": "^2.4.2"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/schlomo/forms-event-sign-up-addon.git"
+    },
+    "bugs": {
+        "url": "https://github.com/schlomo/forms-event-sign-up-addon/issues"
+    },
+    "homepage": "https://github.com/schlomo/forms-event-sign-up-addon#readme"
+}

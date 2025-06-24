@@ -1,0 +1,176 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# HTML/CSS Standards for Google Workspace Add-ons
+
+## UI & UX Goals
+
+As all user interaction happens via the Google Forms sidebar, the UI must be optimized for the limited dimensions of the sidebar, making smart use of the limited space.
+
+- Only show what is actually relevant for the moment, hiding all other UI elements
+- There may be only a single scroll area, and it should be maximized
+- Control elements like buttons should never scroll out of view. They must be visible at all times
+- Implement progressive disclosure to manage information density
+- Use clear visual hierarchy to guide user attention
+
+## Google Workspace Add-ons Interface Types
+
+### Sidebars (Primary Interface)
+- **Fixed Width**: Add-on sidebars have a fixed width of 300 pixels that cannot be altered
+- **Location**: Appear on the right side of the editor interface
+- **Interaction**: Users can continue to interact with other editor elements while sidebar is open
+- **Creation**: Use `HtmlService.createHtmlOutputFromFile()` and `Ui.showSidebar()`
+- **Purpose**: Most common type of add-on interface for ongoing interaction
+
+### Dialogs (Modal Interface)
+- **Modal Behavior**: Overlay the primary editor content and prevent interaction until closed
+- **Use Case**: When you want to prevent user interaction with editor until a choice is made
+- **Customizable**: Content and size can be customized
+- **Creation**: Use `HtmlService.createHtmlOutputFromFile()` and `Ui.showModalDialog()`
+- **Purpose**: For focused decision-making tasks
+
+### File-Open Dialogs
+- **Pre-built**: Let users select files from Google Drive without custom design
+- **Requirements**: Requires Cloud Platform project access and Google Picker API
+- **Configuration**: Additional setup required beyond standard dialogs
+
+## Google Apps Script Integration
+
+### Script Integration
+- Use `google.script.run` for all server communication
+- Implement proper loading states for all async operations
+- Handle Google Apps Script specific error patterns
+- Use consistent patterns for success/failure feedback
+
+### Client-Server Communication
+- Dialogs and sidebars don't suspend server-side scripts while open
+- Use `google.script.run()` for asynchronous client-to-server calls
+- Implement proper success and failure handlers
+- Use `withSuccessHandler()` and `withFailureHandler()` consistently
+
+### Sidebar Constraints
+- Design for fixed 300px width constraint
+- Optimize for vertical scrolling
+- Minimize horizontal scrolling
+- Account for Google's addon styling framework
+
+## Custom HTML Elements
+**PRINCIPLE**: Use semantic custom HTML elements instead of generic divs with CSS classes. Each element should represent a distinct semantic purpose without unnecessary nesting.
+
+**RULE**: Avoid wrapper elements that serve no semantic purpose - apply layout directly to meaningful containers.
+
+Create new custom elements as needed, following the semantic naming principle.
+
+## HTML Structure Guidelines
+
+### Semantic Structure Principles
+- Each custom element should have a clear semantic purpose
+- Avoid unnecessary wrapper elements - apply CSS layout directly to meaningful containers
+- Use descriptive element names that reflect content purpose, not visual appearance
+- Maintain flat hierarchy where possible while preserving semantic meaning
+- Use proper heading hierarchy (h1, h2, h3) for content structure
+
+### Form Elements
+- Use semantic form elements for all inputs
+- Implement proper labels and accessibility attributes
+- Use appropriate input types for different data
+- Provide clear validation feedback
+
+### Dynamic Content
+- Use consistent patterns for dynamically generated content
+- Implement proper loading states for dynamic elements
+- Handle empty states gracefully
+- Maintain accessibility for dynamic content
+
+### Image Best Practices
+- Always include `alt` attributes
+- Use `loading="lazy"` for thumbnails
+- Thumbnail images should be properly sized
+- Optimize images for sidebar display
+
+### Accessibility
+- Use semantic HTML elements
+- Ensure proper color contrast (WCAG AA compliance)
+- Include focus states for keyboard navigation
+- Use descriptive link text
+- Implement proper ARIA attributes where needed
+- Ensure screen reader compatibility
+
+## CSS Architecture
+
+### Layout Principles
+- Use CSS Grid and Flexbox for modern layouts
+- Implement responsive design patterns
+- Use CSS custom properties for consistent theming
+- Minimize layout shifts during interactions
+- Design for fixed 300px sidebar width constraint
+
+### Component-Based Styling
+- Create reusable component styles
+- Use consistent spacing and sizing systems
+- Implement proper component variants
+- Maintain consistent visual language
+
+### State Management
+- Use CSS classes for state management
+- Implement proper hover, focus, and active states
+- Use consistent patterns for loading and error states
+- Handle disabled states appropriately
+
+## Performance Guidelines
+- Minimize CSS file size
+- Use efficient selectors
+- Leverage CSS custom properties for consistency
+- Optimize hover animations for 60fps
+- Minimize reflows and repaints
+- Use CSS containment where appropriate
+
+## Code Organization
+- Group related styles together
+- Use comments to separate major sections
+- Follow BEM-like naming for utility classes
+- Keep specificity low and predictable
+- Use consistent naming conventions
+- Organize styles by component and functionality
+
+## Google Workspace Integration
+
+### Styling Framework
+- Leverage Google's addon CSS framework
+- Maintain consistency with Google Workspace UI
+- Use Google's color palette and typography
+- Follow Google's design patterns
+- Reference the [Google Workspace Add-ons CSS guide](mdc:https:/developers.google.com/workspace/add-ons/guides/css)
+
+### Responsive Behavior
+- Design for sidebar width constraints (300px fixed width)
+- Implement proper mobile considerations
+- Handle different screen densities
+- Maintain usability across devices
+
+### Error States
+- Implement clear error messaging
+- Use consistent error styling patterns
+- Provide actionable error guidance
+- Handle network and permission errors gracefully
+
+## Interface Creation Patterns
+
+### Sidebar Creation
+1. Create HTML file with structure, CSS, and client-side JavaScript
+2. Use `HtmlService.createHtmlOutputFromFile(filename)` to create HtmlOutput
+3. Call `Ui.showSidebar(htmlOutput)` to display
+4. Implement client-server communication with `google.script.run()`
+
+### Dialog Creation
+1. Create HTML file with structure, CSS, and client-side JavaScript
+2. Use `HtmlService.createHtmlOutputFromFile(filename)` to create HtmlOutput
+3. Call `Ui.showModalDialog(htmlOutput, dialogTitle)` to display
+4. Implement client-server communication with `google.script.run()`
+
+### Template Usage
+- Use `HtmlService.createTemplateFromFile(filename)` for templated HTML
+- Call `HtmlTemplate.evaluate()` to convert to HtmlOutput
+- Useful for dynamic content generation

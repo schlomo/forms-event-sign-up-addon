@@ -1,0 +1,132 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# JavaScript Standards for Google Workspace Add-ons
+
+## Frontend JavaScript Principles
+
+### Google Apps Script Integration
+- Use `google.script.run` for all server communication
+- Implement proper success and failure handlers for all server calls
+- Use `withSuccessHandler()` and `withFailureHandler()` consistently
+- Avoid blocking operations in the UI thread
+
+### Client-Server Communication Patterns
+- **Asynchronous Communication**: Dialogs and sidebars don't suspend server-side scripts
+- **Non-blocking**: Server-side script continues running while interface is open
+- **Error Handling**: Always implement both success and failure handlers
+- **Data Validation**: Validate data on both client and server sides
+
+### Event Handling
+- Implement proper debouncing for search and input operations
+- Use event delegation where appropriate for dynamic content
+- Handle both success and error states for all user interactions
+- Provide immediate visual feedback for user actions
+
+### State Management
+- Maintain clear state variables for UI components
+- Use consistent state update patterns
+- Implement proper state validation before operations
+- Clear state appropriately when switching between modes
+
+## Code Organization & Structure
+
+### Function Organization
+- Group related functions together
+- Use descriptive function names that indicate purpose
+- Implement proper separation of concerns
+- Keep functions focused and single-purpose
+
+### Variable Management
+- Use `let` and `const` appropriately
+- Declare variables at the top of their scope
+- Use meaningful variable names
+- Avoid global variables when possible
+
+### Error Handling
+- Implement comprehensive error handling for all async operations
+- Provide user-friendly error messages
+- Log errors appropriately for debugging
+- Gracefully handle network and permission errors
+
+## UI State Management
+
+### Loading States
+- Implement proper loading indicators for all async operations
+- Show/hide loading states consistently
+- Provide visual feedback during operations
+- Handle loading state errors gracefully
+
+### Mode Management
+- Use clear mode switching logic
+- Implement proper state cleanup when switching modes
+- Maintain consistent UI state across mode changes
+- Handle mode-specific validation appropriately
+
+### Data Binding
+- Implement proper data binding patterns
+- Update UI elements consistently with data changes
+- Validate data before updating UI
+- Handle empty or invalid data gracefully
+
+## Performance & Optimization
+
+### DOM Manipulation
+- Minimize DOM queries by caching elements
+- Batch DOM updates where possible
+- Use efficient selectors and traversal methods
+- Avoid unnecessary re-renders
+
+### Memory Management
+- Clean up event listeners when elements are removed
+- Avoid memory leaks in long-running operations
+- Use proper cleanup patterns for dynamic content
+- Implement proper garbage collection practices
+
+### Search & Filtering
+- Implement proper debouncing for search operations
+- Use efficient search algorithms
+- Provide clear feedback for search results
+- Handle empty search results appropriately
+
+## User Experience Patterns
+
+### Responsive Design
+- Ensure UI works well in constrained sidebar environment (300px width)
+- Implement proper responsive patterns
+- Handle different screen sizes appropriately
+- Maintain usability across different devices
+
+### Accessibility
+- Implement proper keyboard navigation
+- Use semantic HTML elements
+- Provide proper focus management
+- Include appropriate ARIA attributes
+
+### Error Recovery
+- Provide clear error messages
+- Implement retry mechanisms where appropriate
+- Guide users to resolve common issues
+- Maintain application state during errors
+
+## Interface-Specific Patterns
+
+### Sidebar Patterns
+- **Fixed Width Design**: Design for 300px fixed width constraint
+- **Vertical Scrolling**: Optimize for vertical scrolling patterns
+- **Persistent Controls**: Keep important controls always visible
+- **Progressive Disclosure**: Hide irrelevant information until needed
+
+### Dialog Patterns
+- **Modal Focus**: Ensure dialog captures user attention appropriately
+- **Clear Actions**: Provide clear action buttons (OK, Cancel, etc.)
+- **Size Optimization**: Design for appropriate dialog size
+- **Error Handling**: Handle errors without losing user context
+
+### File Selection Patterns
+- **File-Open Dialogs**: Use pre-built dialogs for Google Drive file selection
+- **Validation**: Validate selected files before processing
+- **User Feedback**: Provide clear feedback for file selection
+- **Error Recovery**: Handle file access permission errors gracefully

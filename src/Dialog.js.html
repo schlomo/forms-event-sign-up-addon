@@ -1,0 +1,198 @@
+<script>
+    // --- Cached DOM Elements ---
+    const dom = {
+        loader: document.querySelector('loading-spinner'),
+        mainContent: document.querySelector('main-content'),
+        error: {
+            container: document.querySelector('error-display'),
+            message: document.querySelector('.error-message')
+        },
+        emailWarning: document.querySelector('.email-warning'),
+        configManager: document.querySelector('config-manager'),
+        displayView: document.querySelector('display-view'),
+        configView: document.querySelector('config-view'),
+        calendarSelect: document.querySelector('.calendar-select'),
+        eventSearch: document.querySelector('.event-search'),
+        eventList: document.querySelector('event-list'),
+        configDisplay: {
+            calendar: document.querySelector('.config-display-calendar'),
+            event: document.querySelector('.config-display-event')
+        },
+        buttons: {
+            reset: document.querySelector('.reset-btn'),
+            save: document.querySelector('.save-btn'),
+        }
+    };
+
+    // --- State ---
+    let state = {
+        selectedCalendarId: null,
+        selectedEventId: null,
+        debounceTimer: null
+    };
+
+    // --- Initialization ---
+    window.addEventListener('load', () => {
+        console.log('[Init] Dialog loaded. Requesting initial data from server...');
+        setUiView('loading');
+        google.script.run.withSuccessHandler(handleInitialData).withFailureHandler(handleError).getDialogData();
+        addEventListeners();
+    });
+
+    function addEventListeners() {
+        console.log('[Init] Adding event listeners...');
+        dom.buttons.reset.addEventListener('click', handleResetConfiguration);
+        dom.buttons.save.addEventListener('click', handleSaveConfiguration);
+        dom.calendarSelect.addEventListener('change', handleCalendarSelection);
+        dom.eventSearch.addEventListener('input', handleEventSearch);
+        console.log('[Init] Event listeners added.');
+    }
+
+    // --- Server Communication Handlers ---
+    function handleInitialData(data) {
+        console.log('[Data] Received initial data from server:', data);
+        if (data.errorMessage) {
+            console.error('[Data] Server returned an error on initial load:', data.errorMessage);
+            setUiView('error', { message: data.errorMessage });
+            return;
+        }
+
+        if (data.isConfigured) {
+            setUiView('display', data);
+        } else {
+            setUiView('config', data);
+        }
+    }
+
+    function handleError(error) {
+        console.error('[Error] An error occurred:', error);
+        setUiView('error', { message: error.message || 'An unknown error occurred. Please check the logs for details.' });
+    }
+
+    // --- View Management ---
+    function setUiView(view, data = {}) {
+        console.log(`[View] Setting UI view to: ${view}`);
+
+        const allViews = [dom.loader, dom.mainContent, dom.error.container, dom.displayView, dom.configView];
+        allViews.forEach(v => v.classList.add('hidden'));
+
+        if (view === 'loading') {
+            dom.loader.classList.remove('hidden');
+        }
+        else if (view === 'error') {
+            dom.error.message.textContent = data.message;
+            dom.error.container.classList.remove('hidden');
+        }
+        else if (view === 'display') {
+            dom.emailWarning.classList.toggle('hidden', data.formCollectsEmails);
+            dom.configDisplay.calendar.textContent = data.linkedCalendarName || 'Not found';
+            dom.configDisplay.event.innerHTML = `${data.linkedEventTitle || 'Not found'}<br><span style="font-size:0.9em; color:#5f6368;">${data.linkedEventTime || ''}</span>`;
+            dom.displayView.classList.remove('hidden');
+            dom.mainContent.classList.remove('hidden');
+        }
+        else if (view === 'config') {
+            populateCalendarSelect(data.allCalendars);
+            dom.configView.classList.remove('hidden');
+            dom.mainContent.classList.remove('hidden');
+        }
+    }
+
+    // --- UI Logic ---
+    function populateCalendarSelect(calendars) {
+        console.log('[UI] Populating calendar select with', calendars ? calendars.length : 0, 'calendars.');
+        dom.calendarSelect.innerHTML = '<option value="">-- Select a Calendar --</option>';
+        calendars.forEach(cal => {
+            const option = document.createElement('option');
+            option.value = cal.id;
+            option.textContent = cal.name;
+            dom.calendarSelect.appendChild(option);
+        });
+        dom.calendarSelect.disabled = false;
+        console.log('[UI] Calendar select populated.');
+    }
+
+    function displayEvents(events) {
+        console.log('[UI] Displaying', events ? events.length : 0, 'events.');
+        dom.eventList.innerHTML = '';
+        if (!events || events.length === 0) {
+            dom.eventList.innerHTML = '<p style="text-align:center; padding: 20px; color: #777;">No events found.</p>';
+            return;
+        }
+        events.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+        let lastDateStr = null;
+        events.forEach(event => {
+            const startDate = new Date(event.startTime);
+            const eventDateStr = startDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+
+            if (eventDateStr !== lastDateStr) {
+                const dateHeader = document.createElement('date-header');
+                dateHeader.textContent = eventDateStr;
+                dom.eventList.appendChild(dateHeader);
+                lastDateStr = eventDateStr;
+            }
+
+            const item = document.createElement('event-item');
+            const timeStr = `${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })} - ${new Date(event.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+
+            const timeEl = document.createElement('event-time');
+            timeEl.textContent = timeStr;
+
+            const titleEl = document.createElement('span');
+            titleEl.textContent = event.title;
+
+            item.appendChild(timeEl);
+            item.appendChild(titleEl);
+            item.dataset.eventId = event.id;
+
+            item.addEventListener('click', () => {
+                dom.eventList.querySelectorAll('event-item.selected').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+                state.selectedEventId = event.id;
+                dom.buttons.save.disabled = false;
+                console.log('[State] Selected event ID:', state.selectedEventId);
+            });
+            dom.eventList.appendChild(item);
+        });
+        console.log('[UI] Finished displaying events.');
+    }
+
+    // --- Event Handlers ---
+    function handleResetConfiguration() {
+        console.log('[Event] Reset button clicked.');
+        setUiView('loading');
+        google.script.run.withSuccessHandler(handleInitialData).withFailureHandler(handleError).resetConfiguration();
+    }
+
+    function handleSaveConfiguration() {
+        console.log('[Event] Save button clicked.');
+        if (!state.selectedCalendarId || !state.selectedEventId) {
+            console.warn('[Event] Save clicked but calendar or event not selected.');
+            return;
+        }
+        setUiView('loading');
+        google.script.run.withSuccessHandler(handleInitialData).withFailureHandler(handleError).saveConfiguration(state.selectedCalendarId, state.selectedEventId);
+    }
+
+    function handleCalendarSelection(e) {
+        state.selectedCalendarId = e.target.value;
+        console.log('[State] Selected calendar ID:', state.selectedCalendarId);
+        dom.eventSearch.disabled = !state.selectedCalendarId;
+        dom.eventSearch.value = '';
+        dom.eventList.innerHTML = '';
+        dom.buttons.save.disabled = true;
+        state.selectedEventId = null;
+    }
+
+    function handleEventSearch(e) {
+        clearTimeout(state.debounceTimer);
+        state.debounceTimer = setTimeout(() => {
+            const query = e.target.value;
+            console.log(`[Event] Event search for query: "${query}"`);
+            if (state.selectedCalendarId && query.length > 2) {
+                dom.eventList.innerHTML = '<div class="spinner" style="margin: 40px auto;"></div>';
+                google.script.run.withSuccessHandler(displayEvents).withFailureHandler(handleError).getEvents(state.selectedCalendarId, query);
+            }
+        }, 500);
+    }
+</script>
