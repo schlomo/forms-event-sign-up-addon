@@ -5,10 +5,9 @@
         mainContent: document.querySelector('main-content'),
         error: {
             container: document.querySelector('error-display'),
-            message: document.querySelector('.error-message')
+            message: document.querySelector('error-message')
         },
-        emailWarning: document.querySelector('.email-warning'),
-        configManager: document.querySelector('config-manager'),
+        emailWarning: document.querySelector('email-warning'),
         displayView: document.querySelector('display-view'),
         configView: document.querySelector('config-view'),
         calendarSelect: document.querySelector('.calendar-select'),
@@ -19,8 +18,8 @@
             event: document.querySelector('.config-display-event')
         },
         buttons: {
-            reset: document.querySelector('.reset-btn'),
-            save: document.querySelector('.save-btn'),
+            reset: document.querySelector('reset-button'),
+            save: document.querySelector('save-button'),
         }
     };
 
@@ -58,9 +57,9 @@
         }
 
         if (data.isConfigured) {
-            setUiView('display', data);
+            setUiView('main', data);
         } else {
-            setUiView('config', data);
+            setUiView('main', data);
         }
     }
 
@@ -73,27 +72,28 @@
     function setUiView(view, data = {}) {
         console.log(`[View] Setting UI view to: ${view}`);
 
-        const allViews = [dom.loader, dom.mainContent, dom.error.container, dom.displayView, dom.configView];
+        const allViews = [dom.loader, dom.mainContent, dom.error.container];
         allViews.forEach(v => v.classList.add('hidden'));
 
         if (view === 'loading') {
             dom.loader.classList.remove('hidden');
-        }
-        else if (view === 'error') {
+        } else if (view === 'error') {
             dom.error.message.textContent = data.message;
             dom.error.container.classList.remove('hidden');
-        }
-        else if (view === 'display') {
-            dom.emailWarning.classList.toggle('hidden', data.formCollectsEmails);
-            dom.configDisplay.calendar.textContent = data.linkedCalendarName || 'Not found';
-            dom.configDisplay.event.innerHTML = `${data.linkedEventTitle || 'Not found'}<br><span style="font-size:0.9em; color:#5f6368;">${data.linkedEventTime || ''}</span>`;
-            dom.displayView.classList.remove('hidden');
+        } else if (view === 'main') {
             dom.mainContent.classList.remove('hidden');
-        }
-        else if (view === 'config') {
-            populateCalendarSelect(data.allCalendars);
-            dom.configView.classList.remove('hidden');
-            dom.mainContent.classList.remove('hidden');
+            // Further toggle sub-views inside main
+            if (data.isConfigured) {
+                dom.emailWarning.classList.toggle('hidden', data.formCollectsEmails);
+                dom.configDisplay.calendar.textContent = data.linkedCalendarName || 'Not found';
+                dom.configDisplay.event.innerHTML = `${data.linkedEventTitle || 'Not found'}<br><span style="font-size:0.9em; color:#5f6368;">${data.linkedEventTime || ''}</span>`;
+                dom.configView.classList.add('hidden');
+                dom.displayView.classList.remove('hidden');
+            } else {
+                populateCalendarSelect(data.allCalendars);
+                dom.displayView.classList.add('hidden');
+                dom.configView.classList.remove('hidden');
+            }
         }
     }
 

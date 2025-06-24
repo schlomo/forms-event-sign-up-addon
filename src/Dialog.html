@@ -11,50 +11,48 @@
         <div class="spinner"></div>
     </loading-spinner>
 
+    <error-display class="hidden">
+        <error-title>An Error Occurred</error-title>
+        <error-message></error-message>
+    </error-display>
+
     <main-content class="hidden">
-        <error-display class="hidden">
-            <div class="error-box-title">An Error Occurred</div>
-            <p class="error-message"></p>
-        </error-display>
+        <!-- Display Mode -->
+        <display-view class="hidden">
+            <section-title>Current Configuration</section-title>
+            <email-warning class="hidden">
+                <strong>Warning:</strong> This form is not set up to collect email addresses. Event sign-ups will
+                not work until you enable email collection in the form's "Settings" tab.
+            </email-warning>
+            <status-grid>
+                <strong>Calendar:</strong> <span class="config-display-calendar"></span>
+                <strong>Event:</strong> <span class="config-display-event"></span>
+            </status-grid>
+            <actions-area>
+                <reset-button class="action">Reset & Change Configuration</reset-button>
+            </actions-area>
+        </display-view>
 
-        <config-manager>
-            <!-- Display Mode -->
-            <display-view class="hidden">
-                <h2 class="section-title">Current Configuration</h2>
-                <div class="email-warning error-box hidden">
-                    <strong>Warning:</strong> This form is not set up to collect email addresses. Event sign-ups will
-                    not work until you enable email collection in the form's "Settings" tab.
-                </div>
-                <div class="status-grid">
-                    <strong>Calendar:</strong> <span class="config-display-calendar"></span>
-                    <strong>Event:</strong> <span class="config-display-event"></span>
-                </div>
-                <actions-area>
-                    <button class="reset-btn action">Reset & Change Configuration</button>
-                </actions-area>
-            </display-view>
-
-            <!-- Configuration Mode -->
-            <config-view class="hidden">
-                <h2 class="section-title">Set up Event Sign-up</h2>
-                <inputs-area>
-                    <div class="form-group">
-                        <label for="calendar-select">1. Select a Calendar</label>
-                        <select class="calendar-select" disabled>
-                            <option>Loading calendars...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="event-search">2. Find an Event</label>
-                        <input type="text" class="event-search" placeholder="Type to search events..." disabled>
-                    </div>
-                </inputs-area>
-                <event-list></event-list>
-                <actions-area>
-                    <button class="save-btn action" disabled>Save Configuration</button>
-                </actions-area>
-            </config-view>
-        </config-manager>
+        <!-- Configuration Mode -->
+        <config-view class="hidden">
+            <section-title>Set up Event Sign-up</section-title>
+            <inputs-area>
+                <form-group>
+                    <label for="calendar-select">1. Select a Calendar</label>
+                    <select class="calendar-select" disabled>
+                        <option>Loading calendars...</option>
+                    </select>
+                </form-group>
+                <form-group>
+                    <label for="event-search">2. Find an Event</label>
+                    <input type="text" class="event-search" placeholder="Type to search events..." disabled>
+                </form-group>
+            </inputs-area>
+            <event-list></event-list>
+            <actions-area>
+                <save-button class="action" disabled>Save Configuration</save-button>
+            </actions-area>
+        </config-view>
     </main-content>
     <?!= include('Dialog.js'); ?>
 </body>
