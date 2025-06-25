@@ -49,7 +49,6 @@ check_auth() {
     # a login status of 1 means logged out, 0 means logged in
     if ! clasp login --status &> /dev/null; then
         log_warning "Not logged in to clasp. Please run: clasp login"
-        # We don't exit here, as some commands might work without login
-        # but we do want to warn the user
+        exit 1
     fi
 } 
