@@ -9,6 +9,21 @@ set -euo pipefail
 # shellcheck source=./lib/utils.sh
 source "$(dirname "$0")/lib/utils.sh"
 
+# Check for local changes
+check_local_changes() {
+    if [[ -n "$(git status --porcelain)" ]]; then
+        log_warning "You have uncommitted local changes. Consider committing them first."
+        git status
+        # We don't exit here, just warn, as this isn't a formal release script.
+    fi
+}
+
+# Get the current version from package.json
+get_package_version() {
+    # Using grep and sed to avoid a dependency on jq
+    grep '"version":' package.json | sed -E 's/.*"version": "([^"]+)".*/\1/'
+}
+
 # Pull latest changes from Google Apps Script
 pull_changes() {
     log_info "Pulling latest changes from Google Apps Script..."
@@ -58,13 +73,17 @@ show_status() {
 
 # Main deployment workflow
 main() {
-    local version_description="${1:-$(date +'%Y-%m-%d %H:%M:%S') deployment}"
+    local custom_description="${1:-Manual deployment}"
+    local pkg_version
+    pkg_version=$(get_package_version)
+    local full_description="v${pkg_version}: ${custom_description}"
     
     log_info "Starting deployment workflow..."
     
     # Pre-flight checks
     check_directory
     check_auth
+    check_local_changes
     
     # Pull any remote changes first
     pull_changes
@@ -73,7 +92,7 @@ main() {
     push_changes
     
     # Deploy new version
-    deploy_version "$version_description"
+    deploy_version "$full_description"
     
     # Show status
     show_status
@@ -115,8 +134,8 @@ case "${1:-}" in
         echo "  help         Show this help message"
         echo ""
         echo "Examples:"
-        echo "  $0                                    # Deploy with timestamp"
-        echo "  $0 'v1.2.3 - Bug fixes'              # Deploy with custom description"
+        echo "  $0                                    # Deploy with default description"
+        echo "  $0 'UI bug fixes'                    # Deploy with custom description"
         echo "  $0 pull                               # Pull remote changes"
         ;;
     *)
