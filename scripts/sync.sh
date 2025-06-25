@@ -5,53 +5,9 @@
 
 set -euo pipefail
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-# Logging functions
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
-
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
-
-# Check if clasp is installed
-check_clasp() {
-    if ! command -v clasp &> /dev/null; then
-        log_error "clasp is not installed. Please install it with: npm install -g @google/clasp"
-        exit 1
-    fi
-}
-
-# Check if we're in the right directory
-check_directory() {
-    if [[ ! -f ".clasp.json" ]]; then
-        log_error "Not in a clasp project directory. Please run this from the project root."
-        exit 1
-    fi
-}
-
-# Check if user is logged in
-check_auth() {
-    if ! clasp login --status &> /dev/null; then
-        log_warning "Not logged in to clasp. Please run: clasp login"
-        exit 1
-    fi
-}
+# Source the shared utility functions
+# shellcheck source=./lib/utils.sh
+source "$(dirname "$0")/lib/utils.sh"
 
 # Check for local changes
 check_local_changes() {
@@ -218,4 +174,4 @@ case "${1:-}" in
     *)
         main "$@"
         ;;
-esac 
+esac
