@@ -106,6 +106,7 @@ main() {
     clasp_deploy "${new_version}" "${release_description}"
 
     log_success "🎉 Release ${new_version} complete and deployed successfully!"
+    log_info "Manually update the version in the Marketplace to: ${new_version//v}"
     log_warning "Don't forget to push the git commit and tag: git push"
 }
 
