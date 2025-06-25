@@ -18,9 +18,6 @@
  * @OnlyCurrentDoc
  */
 
-// --- GLOBAL CONSTANTS ---
-const PROPERTIES = PropertiesService.getDocumentProperties();
-
 /**
  * Runs when the add-on is first installed or the document is opened.
  * Creates a single menu item to open the management dialog.
@@ -140,7 +137,7 @@ function resetConfiguration() {
         ScriptApp.deleteTrigger(trigger);
       }
     }
-    PROPERTIES.deleteAllProperties();
+    PropertiesService.getDocumentProperties().deleteAllProperties();
     Logger.log("Configuration and trigger have been reset.");
     return getDialogData();
   } catch (e) {
@@ -255,28 +252,29 @@ function createOnFormSubmitTrigger() {
  * @param {Object} e The event object passed by the onFormSubmit trigger.
  */
 function addAttendeeOnSubmit(e) {
-  const config = PROPERTIES.getProperties();
-  const CALENDAR_ID = config.calendarId;
-  const EVENT_ID = config.eventId;
+  const config = PropertiesService.getDocumentProperties().getProperties();
+  const calendarId = config.calendarId;
+  const eventId = config.eventId;
+  const formResponse = e.response;
 
-  if (!CALENDAR_ID || !EVENT_ID) {
+  if (!calendarId || !eventId) {
     Logger.log("Configuration not found.");
     return;
   }
   try {
-    const respondentEmail = e.response.getRespondentEmail();
+    const respondentEmail = formResponse.getRespondentEmail();
     if (!respondentEmail) {
       Logger.log("Respondent email not found.");
       return;
     }
-    const calendar = CalendarApp.getCalendarById(CALENDAR_ID);
+    const calendar = CalendarApp.getCalendarById(calendarId);
     if (!calendar) {
-      Logger.log(`Calendar not found: ${CALENDAR_ID}`);
+      Logger.log(`Calendar not found: ${calendarId}`);
       return;
     }
-    const event = calendar.getEventById(EVENT_ID);
+    const event = calendar.getEventById(eventId);
     if (!event) {
-      Logger.log(`Event not found: ${EVENT_ID}`);
+      Logger.log(`Event not found: ${eventId}`);
       return;
     }
     event.addGuest(respondentEmail);
