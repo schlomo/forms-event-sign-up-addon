@@ -8,6 +8,8 @@ set -euo pipefail
 # Source the shared utility functions
 # shellcheck source=./lib/utils.sh
 source "$(dirname "$0")/lib/utils.sh"
+# shellcheck source=./lib/clasp-utils.sh
+source "$(dirname "$0")/lib/clasp-utils.sh"
 
 # --- Main release functions ---
 
@@ -49,35 +51,6 @@ create_new_version() {
     # Return the new version tag for use in the deployment description
     echo "${new_version_tag}"
 }
-
-# Pushes the latest code to Google Apps Script.
-push_to_clasp() {
-    log_info "Pushing latest code to Google Apps Script via clasp..."
-    if npx clasp push; then
-        log_success "Successfully pushed code to Google Apps Script."
-    else
-        log_error "Failed to push code to Google Apps Script."
-        exit 1
-    fi
-}
-
-# Creates a new deployment in Google Apps Script.
-deploy_to_clasp() {
-    local version_tag="$1"
-    local description="$2"
-    local full_description="${version_tag}: ${description}"
-
-    log_info "Creating new deployment on Google Apps Script..."
-    log_info "Description: ${full_description}"
-    
-    if npx clasp deploy --description "${full_description}"; then
-        log_success "Successfully created new deployment."
-    else
-        log_error "Failed to create new deployment."
-        exit 1
-    fi
-}
-
 
 # --- Main Script ---
 
@@ -127,13 +100,13 @@ main() {
     new_version=$(create_new_version)
 
     # 4. Push code to Apps Script project
-    push_to_clasp
+    clasp_push
 
     # 5. Create new deployment
-    deploy_to_clasp "${new_version}" "${release_description}"
+    clasp_deploy "${new_version}" "${release_description}"
 
     log_success "🎉 Release ${new_version} complete and deployed successfully!"
-    log_warning "Don't forget to push the git commit and tag: git push --follow-tags"
+    log_warning "Don't forget to push the git commit and tag: git push"
 }
 
 # Run the main function with all script arguments

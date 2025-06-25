@@ -8,6 +8,8 @@ set -euo pipefail
 # Source the shared utility functions
 # shellcheck source=./lib/utils.sh
 source "$(dirname "$0")/lib/utils.sh"
+# shellcheck source=./lib/clasp-utils.sh
+source "$(dirname "$0")/lib/clasp-utils.sh"
 
 # Check for local changes
 check_local_changes() {
@@ -18,36 +20,12 @@ check_local_changes() {
     return 0
 }
 
-# Pull changes from Google Apps Script
-pull_from_remote() {
-    log_info "Pulling changes from Google Apps Script..."
-    if npx clasp pull; then
-        log_success "Successfully pulled changes from Google Apps Script"
-        return 0
-    else
-        log_error "Failed to pull changes from Google Apps Script"
-        return 1
-    fi
-}
-
-# Push changes to Google Apps Script
-push_to_remote() {
-    log_info "Pushing changes to Google Apps Script..."
-    if npx clasp push; then
-        log_success "Successfully pushed changes to Google Apps Script"
-        return 0
-    else
-        log_error "Failed to push changes to Google Apps Script"
-        return 1
-    fi
-}
-
 # Sync in both directions
 sync_bidirectional() {
     log_info "Starting bidirectional sync..."
     
     # First, pull any remote changes
-    if pull_from_remote; then
+    if clasp_pull; then
         # Check if there are any conflicts or new files
         if [[ -n "$(git status --porcelain)" ]]; then
             log_info "Remote changes detected. Review and commit if needed."
@@ -56,7 +34,7 @@ sync_bidirectional() {
     fi
     
     # Then push local changes
-    if push_to_remote; then
+    if clasp_push; then
         log_success "Bidirectional sync completed successfully!"
     else
         log_error "Bidirectional sync failed during push phase"
@@ -70,7 +48,7 @@ force_sync_local() {
     read -p "Are you sure? (y/N): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        if push_to_remote; then
+        if clasp_push; then
             log_success "Force sync completed successfully!"
         else
             log_error "Force sync failed"
@@ -93,7 +71,7 @@ force_sync_remote() {
             git stash
         fi
         
-        if pull_from_remote; then
+        if clasp_pull; then
             log_success "Force sync completed successfully!"
         else
             log_error "Force sync failed"
@@ -129,10 +107,10 @@ main() {
             sync_bidirectional
             ;;
         "pull"|"from-remote")
-            pull_from_remote
+            clasp_pull
             ;;
         "push"|"to-remote")
-            push_to_remote
+            clasp_push
             ;;
         "force-local")
             force_sync_local
