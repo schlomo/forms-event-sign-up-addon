@@ -28,7 +28,7 @@ const PROPERTIES = PropertiesService.getDocumentProperties();
  */
 function onOpen(e) {
   FormApp.getUi()
-    .createMenu('Event Sign-up')
+    .createAddonMenu()
     .addItem('Event Sign-up Manager', 'showDialog')
     .addToUi();
 }
