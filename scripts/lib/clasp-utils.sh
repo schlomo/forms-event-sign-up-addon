@@ -37,7 +37,7 @@ clasp_deploy() {
 
     log_info "Deploying new version with description: \"$full_description\""
 
-    if npx clasp deploy --versionNumber "$new_version" --description "$release_description"; then
+    if npx clasp deploy --description "$full_description"; then
         log_success "Successfully deployed version: ${new_version}"
     else
         log_error "Failed to deploy version: ${new_version}"
