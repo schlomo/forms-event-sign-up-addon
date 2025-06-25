@@ -29,8 +29,16 @@ const PROPERTIES = PropertiesService.getDocumentProperties();
 function onOpen(e) {
   FormApp.getUi()
     .createMenu('Event Sign-up')
-    .addItem('Manage', 'showDialog')
+    .addItem('Event Sign-up Manager', 'showDialog')
     .addToUi();
+}
+/**
+ * Runs when the add-on is installed.
+ * This function is automatically triggered by Google Apps Script.
+ * @param {Object} e The event parameter for onInstall.
+ */
+function onInstall(e) {
+  onOpen(e);
 }
 
 /**
