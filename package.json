@@ -1,6 +1,6 @@
 {
     "name": "forms-event-sign-up-addon",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Google Workspace Add-on for automating event sign-ups via Google Forms and Google Calendar",
     "main": "src/Code.gs",
     "scripts": {
