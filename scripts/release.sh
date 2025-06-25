@@ -71,19 +71,20 @@ show_help() {
 }
 
 main() {
+    # Check for description argument first, as it's used by a function call
+    if [ -z "${1:-}" ]; then
+        log_error "Release description is required."
+        show_help
+        exit 1
+    fi
+
     # Check for help flag
     if [[ "$1" == "-h" || "$1" == "--help" ]]; then
         show_help
         exit 0
     fi
 
-    # Check for description argument
-    if [ -z "$1" ]; then
-        log_error "Release description is required."
-        show_help
-        exit 1
-    fi
-    local release_description="$*"
+    local release_description="$1"
 
     log_info "🚀 Starting new release process..."
 
