@@ -30,14 +30,12 @@ check_git_status() {
 
 # Syncs the local repository with the remote.
 sync_with_remote() {
-    log_info "Syncing with remote repository..."
+    log_info "Pulling latest changes from remote repository..."
     git pull origin main
-    # Pushing is a bit presumptive, but ensures the release is based on the absolute latest version.
-    git push origin main
     log_success "Repository synced with remote."
 }
 
-# Bumps the version, creates a Git tag, and pushes to remote.
+# Bumps the version and creates a Git tag.
 create_new_version() {
     log_info "Bumping version and creating Git tag..."
     # npm version patch will create a new version, commit, and tag.
@@ -47,10 +45,6 @@ create_new_version() {
     
     log_success "Version bumped to ${new_version_tag}."
     
-    log_info "Pushing new version commit and tag to origin..."
-    git push origin main --follow-tags
-    
-    log_success "Commit and tag pushed to remote."
     # Return the new version tag for use in the deployment description
     echo "${new_version_tag}"
 }
@@ -92,9 +86,10 @@ show_help() {
     echo "This script automates the release process:"
     echo "1. Checks for a clean 'main' branch."
     echo "2. Bumps the patch version in package.json."
-    echo "3. Commits the version change and creates a Git tag."
+    echo "3. Commits the version change and creates a Git tag locally."
     echo "4. Pushes the code to Google Apps Script."
     echo "5. Creates a new deployment with the version and description."
+    echo "NOTE: This script does NOT push the new git commit and tag automatically."
     echo ""
     echo "Arguments:"
     echo "  release_description   A string describing the new version's changes."
@@ -138,6 +133,7 @@ main() {
     deploy_to_clasp "${new_version}" "${release_description}"
 
     log_success "🎉 Release ${new_version} complete and deployed successfully!"
+    log_warning "Don't forget to push the git commit and tag: git push --follow-tags"
 }
 
 # Run the main function with all script arguments
