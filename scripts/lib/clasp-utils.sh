@@ -31,13 +31,16 @@ clasp_push() {
 
 # Deploy new version to Google Apps Script
 clasp_deploy() {
-    local version_description="$1"
-    log_info "Deploying new version: $version_description"
-    
-    if npx clasp deploy --description "$version_description"; then
-        log_success "Successfully deployed version: $version_description"
+    local new_version="$1"
+    local release_description="$2"
+    local full_description="${new_version}: ${release_description}"
+
+    log_info "Deploying new version with description: \"$full_description\""
+
+    if npx clasp deploy --description "$full_description"; then
+        log_success "Successfully deployed version: ${new_version}"
     else
-        log_error "Failed to deploy version: $version_description"
+        log_error "Failed to deploy version: ${new_version}"
         exit 1
     fi
 }
