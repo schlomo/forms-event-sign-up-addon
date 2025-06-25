@@ -14,8 +14,9 @@ source "$(dirname "$0")/lib/utils.sh"
 # Ensures the repository is in a clean state for release.
 check_git_status() {
     log_info "Checking Git status..."
-    if ! git diff-index --quiet HEAD --; then
+    if [[ -n "$(git status --porcelain)" ]]; then
         log_error "Working directory is not clean. Please commit or stash your changes before releasing."
+        git status
         exit 1
     fi
 
