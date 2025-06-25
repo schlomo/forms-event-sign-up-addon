@@ -12,7 +12,7 @@ source "$(dirname "$0")/lib/utils.sh"
 # Pull latest changes from Google Apps Script
 pull_changes() {
     log_info "Pulling latest changes from Google Apps Script..."
-    if clasp pull; then
+    if npx clasp pull; then
         log_success "Successfully pulled changes from Google Apps Script"
     else
         log_error "Failed to pull changes from Google Apps Script"
@@ -23,7 +23,7 @@ pull_changes() {
 # Push local changes to Google Apps Script
 push_changes() {
     log_info "Pushing local changes to Google Apps Script..."
-    if clasp push; then
+    if npx clasp push; then
         log_success "Successfully pushed changes to Google Apps Script"
     else
         log_error "Failed to push changes to Google Apps Script"
@@ -36,7 +36,7 @@ deploy_version() {
     local version_description="$1"
     log_info "Deploying new version: $version_description"
     
-    if clasp deploy --description "$version_description"; then
+    if npx clasp deploy --description "$version_description"; then
         log_success "Successfully deployed version: $version_description"
     else
         log_error "Failed to deploy version: $version_description"
@@ -47,13 +47,13 @@ deploy_version() {
 # Open Google Apps Script project
 open_project() {
     log_info "Opening Google Apps Script project..."
-    clasp open
+    npx clasp open
 }
 
 # Show deployment status
 show_status() {
     log_info "Current deployment status:"
-    clasp versions
+    npx clasp versions
 }
 
 # Main deployment workflow
@@ -63,7 +63,6 @@ main() {
     log_info "Starting deployment workflow..."
     
     # Pre-flight checks
-    check_clasp
     check_directory
     check_auth
     
@@ -85,25 +84,21 @@ main() {
 # Handle script arguments
 case "${1:-}" in
     "pull")
-        check_clasp
         check_directory
         check_auth
         pull_changes
         ;;
     "push")
-        check_clasp
         check_directory
         check_auth
         push_changes
         ;;
     "open")
-        check_clasp
         check_directory
         check_auth
         open_project
         ;;
     "status")
-        check_clasp
         check_directory
         check_auth
         show_status

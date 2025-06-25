@@ -52,7 +52,7 @@ create_new_version() {
 # Pushes the latest code to Google Apps Script.
 push_to_clasp() {
     log_info "Pushing latest code to Google Apps Script via clasp..."
-    if clasp push; then
+    if npx clasp push; then
         log_success "Successfully pushed code to Google Apps Script."
     else
         log_error "Failed to push code to Google Apps Script."
@@ -69,7 +69,7 @@ deploy_to_clasp() {
     log_info "Creating new deployment on Google Apps Script..."
     log_info "Description: ${full_description}"
     
-    if clasp deploy --description "${full_description}"; then
+    if npx clasp deploy --description "${full_description}"; then
         log_success "Successfully created new deployment."
     else
         log_error "Failed to create new deployment."
@@ -109,12 +109,11 @@ main() {
         show_help
         exit 1
     fi
-    local release_description="$1"
+    local release_description="$*"
 
     log_info "🚀 Starting new release process..."
 
     # 1. Pre-flight checks
-    check_clasp
     check_directory
     check_auth
     check_git_status

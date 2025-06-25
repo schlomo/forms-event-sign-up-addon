@@ -21,7 +21,7 @@ check_local_changes() {
 # Pull changes from Google Apps Script
 pull_from_remote() {
     log_info "Pulling changes from Google Apps Script..."
-    if clasp pull; then
+    if npx clasp pull; then
         log_success "Successfully pulled changes from Google Apps Script"
         return 0
     else
@@ -33,7 +33,7 @@ pull_from_remote() {
 # Push changes to Google Apps Script
 push_to_remote() {
     log_info "Pushing changes to Google Apps Script..."
-    if clasp push; then
+    if npx clasp push; then
         log_success "Successfully pushed changes to Google Apps Script"
         return 0
     else
@@ -111,7 +111,7 @@ show_status() {
     git status --short
     echo ""
     echo "Remote project info:"
-    clasp open --webapp
+    npx clasp open --webapp
 }
 
 # Main sync workflow
@@ -121,7 +121,6 @@ main() {
     log_info "Starting sync workflow in $sync_mode mode..."
     
     # Pre-flight checks
-    check_clasp
     check_directory
     check_auth
     
