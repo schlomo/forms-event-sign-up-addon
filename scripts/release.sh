@@ -84,7 +84,7 @@ main() {
         exit 0
     fi
 
-    local release_description="$1"
+    local release_description="$*"
 
     log_info "🚀 Starting new release process..."
 
