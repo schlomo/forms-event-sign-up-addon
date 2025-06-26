@@ -103,10 +103,11 @@ main() {
     clasp_push
 
     # 5. Create new deployment
-    clasp_deploy "${new_version}" "${release_description}"
+    local deployment_version
+    deployment_version=$(clasp_deploy "${new_version}" "${release_description}")
 
     log_success "🎉 Release ${new_version} complete and deployed successfully!"
-    log_info "Manually update the version in the Marketplace to: ${new_version//v}"
+    log_info "Manually update the version in the Marketplace to: ${deployment_version}"
     log_warning "Don't forget to push the git commit and tag: git push"
 }
 

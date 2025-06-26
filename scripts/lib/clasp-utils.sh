@@ -37,12 +37,30 @@ clasp_deploy() {
 
     log_info "Deploying new version with description: \"$full_description\""
 
-    if npx clasp deploy --description "$full_description"; then
-        log_success "Successfully deployed version: ${new_version}"
-    else
-        log_error "Failed to deploy version: ${new_version}"
+    local deploy_output
+    # Redirect stderr to stdout to capture all output
+    if ! deploy_output=$(npx clasp deploy --description "$full_description" 2>&1); then
+        log_error "Failed to deploy version tag: ${new_version}"
+        log_error "Clasp output:"
+        echo "$deploy_output"
         exit 1
     fi
+    
+    # Expected output line: "- Created version 16."
+    local deployment_version
+    deployment_version=$(echo "$deploy_output" | grep "Created version" | awk '{print $NF}' | tr -d '.')
+
+    if [[ -z "$deployment_version" ]]; then
+        log_error "Could not determine deployment version from clasp output."
+        log_error "Clasp output:"
+        echo "$deploy_output"
+        exit 1
+    fi
+    
+    log_success "Successfully deployed version tag ${new_version}. New deployment is version ${deployment_version}."
+    
+    # Return the deployment version number
+    echo "${deployment_version}"
 }
 
 # Open the Google Apps Script project
