@@ -2,6 +2,8 @@
 
 A Google Workspace Add-on that automates event sign-ups by connecting Google Forms to Google Calendar events. When someone submits a form, they are automatically added as a guest to the specified calendar event.
 
+You can install it from https://workspace.google.com/marketplace/app/event_signup/1094030587053.
+
 ## Features
 
 - **Automatic Guest Addition**: Form respondents become calendar event guests
