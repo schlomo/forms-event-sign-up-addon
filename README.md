@@ -40,13 +40,7 @@ cd forms-event-sign-up-addon
 npm install
 ```
 
-### 3. Install Clasp (Google Apps Script CLI)
-
-```bash
-npm install -g @google/clasp
-```
-
-### 4. Authenticate with Google
+### 3. Authenticate with Google
 
 ```bash
 npm run login

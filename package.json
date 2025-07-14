@@ -6,7 +6,7 @@
     "scripts": {
         "login": "clasp login",
         "logout": "clasp logout",
-        "create": "clasp create --type standalone --title 'Forms Event Sign-up Addon'",
+        "create": "clasp create --type standalone --title 'Forms Event Sign-up Addon' --rootDir src",
         "push": "clasp push",
         "pull": "clasp pull",
         "open": "clasp open",
